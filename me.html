@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<head>
+  <link rel="stylesheet" href="common.css">
+  <meta charset="utf-8">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="firebase-load.js"></script>
+  <script type="text/javascript">
+  //output: e
+  //input : a , d
+
+  function map_range(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+  }
+
+  function onFirebaseReady() {
+    console.log('onFirebaseReady handler');
+
+    var vids = $("video");
+    $.each(vids, function() {
+      this.controls = false;
+    });
+    var average = 0
+    var bound = 30
+    var min = 0
+    var max = 50
+  }
+var w = window.innerWidth
+var h = window.innerHeight
+var f1timeout
+var f1counter = 0
+var bubblecounter = 0
+  function firebaseValueChangeHandler(values) {
+    console.log('firebaseValueChangeHandler')
+    console.log(values.f1)
+
+    if(values.f1){
+            f1counter ++ 
+              console.log(f1counter)
+            if(f1counter%10 == 0){
+              addbubble(values.f1,values.f2)
+            }
+            $('#finger').css({
+                  'margin-top': '0px',
+                'left': values.f1 + 'px',
+                'top': 0 + 'px',
+                'transform': 'scale('+((values.f2-0.2)/h) +')' 
+            }); 
+            clearTimeout(f1timeout)
+            f1timeout=setTimeout(function(){
+              $('#finger').css({
+                  'transition':'margin-top 1s',
+                  'margin-top': '-500px' 
+              }) 
+            },500)
+    }
+    function addbubble(a,b){
+      bubblecounter++
+      $('body').append('<div class="bubble bubble_'+bubblecounter+'"></div>')
+            $('.bubble_'+bubblecounter).css({
+                'left': a+Math.floor(Math.random()*100) + 'px',
+                'top': (0.5*w*((b-0.2)/h)-200) + 'px'
+            }); 
+              setTimeout(function(){
+                $('.bubble_'+bubblecounter).css({
+                  'margin-top':-100+'vh',
+                  'transform':'scale(1)'
+              },10); 
+            })
+            if(bubblecounter>20){
+              $('.bubble_'+(bubblecounter-20)).remove()
+            }
+    }
+    // input
+    // input
+    if (values.a) {
+      // FIXME .elem does not exist
+      $('body').addClass('black')
+    } else {
+      $('body').removeClass('black')
+    }
+    if (values.d) {
+      // FIXME .elem does not exist
+      $('body').addClass('orange')
+    } else {
+      $('body').removeClass('orange')
+    }
+  }
+
+
+
+
+
+
+
+$(document).ready(function(){
+
+var video = document.querySelector("#videoElement");
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function (err0r) {
+      console.log("Something went wrong!");
+    });
+}
+
+    var STARTING_FISH_COUNT = 38;
+
+  // globals
+  var $count, $pond, pondWidth, pondHeight;
+
+  // on document ready
+  $(function() {
+    // setup
+    $pond = $('.pond');
+    determinePondSize();
+    
+    // events
+    $(window).on('resize', determinePondSize);
+    
+    // fill the pond
+    spawnStartingFish();
+  });
+
+  function determinePondSize() {
+    pondWidth = $pond.width();
+    pondHeight = $pond.height();
+    console.log()
+  }  
+
+  function spawnStartingFish() {
+    for (var i = 0; i < STARTING_FISH_COUNT; i++) {
+      spawnFish(getRandom(pondWidth), getRandom(pondHeight));
+    }
+  }
+
+  function spawnFish(x, y) {
+    // setup fish
+    var $fish = $('<div class="fish"><div class="fish-bob"><div class="fish-direction"><div class="fish-body"></div></div></div></div>');
+    var colors = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4];
+    $fish.addClass('fish-' + colors[Math.floor(getRandom(15))]);
+    if (getRandom(2) < 1) {
+      $fish.addClass('fish-flip');
+    }
+    $fish.find('.fish-bob').css('animation-delay', '-' + getRandom(7) + 's');
+    positionFish($fish, x, y);
+    
+    // let fish go
+    $pond.append($fish);
+    setTimeout(doFishyThings.bind(this, $fish), getRandom(10000))
+  }
+
+  function doFishyThings($fish) {
+    moveFish($fish);
+    
+    var timeout = $fish.data('timeout');
+    clearTimeout(timeout);
+    timeout = setTimeout(doFishyThings.bind(this, $fish), 10000 + getRandom(6000));
+    $fish.data('timeout', timeout);
+  }
+
+  function moveFish($fish) {
+    var x = getRandom(pondWidth);
+    var y = getRandom(pondHeight);
+    
+    if (x < $fish.data('x')) {
+      $fish.addClass('fish-flip');
+    } else {
+      $fish.removeClass('fish-flip');
+    }
+    positionFish($fish, x, y);
+  }
+
+  function positionFish($fish, x, y) {
+    $fish
+      .css('transform', 'translate(' + x + 'px, ' + y + 'px)')
+      .data('x', x)
+      .data('y', y); 
+  }
+
+  function getRandom(upper) {
+    return Math.random() * upper;
+  }
+})
+  
+  </script>
+  <style>
+    #finger{
+      width: 30vw;
+      position: absolute;
+      bottom: 0;
+      transform-origin: top;
+z-index: 1000000000;
+top: 0px;
+margin-left: -20vw
+    }
+
+.bubble{
+  position: fixed;
+  bottom: 0;
+  width: 10vw;
+  height: 10vw;
+  transition: 15s cubic-bezier(0,.7,.67,1);
+  margin-top: 0;
+z-index: 1000000000;
+background-image: url('img/bubble.png');
+mix-blend-mode: color-burn;
+background-size: contain;
+background-repeat: no-repeat;
+transform: scale(0);
+}
+    .bg{
+      width: 100vw;
+      bottom: 0;
+/*mix-blend-mode: hard-light;*/
+z-index: 10000000;
+position: fixed;
+    }
+html { height: 100%; }
+
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: #1d3f59;
+  backface-visibility: hidden;
+}
+
+h1 {
+  position: absolute;
+  top: calc(50% - 125px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0 20px;
+  color: #1d3f59;
+  font: 250px/1 'Lilita One', sans-serif;
+  white-space: nowrap;
+  text-align: right;
+  text-shadow: 0 0 80px rgba(255, 255, 255, 0.3);
+}
+
+.pond {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0);
+    z-index: 1000;
+}
+
+.fish {
+  position: absolute;
+  margin: -15px 0 0 -30px;
+  opacity: 0;
+  transition: transform 10s;
+  animation: spawn .5s forwards;
+  width: 10vw;
+  height: 10vw;
+}
+@keyframes spawn {
+  100% { opacity: 1; }
+}
+
+.fish-bob {
+  position: relative;
+  margin-top: -20px;
+  animation: bob 6s infinite;
+}
+@keyframes bob {
+  50% { transform: translateY(40px); }
+}
+
+.fish-direction {
+  position: relative;
+  transition: transform .5s;
+}
+
+.fish-body {
+  position: relative;
+  margin-left: 10px;
+  background-image: url(img/fish1.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 2s ease-out;
+    width: 14vw;
+    height: 12.5vw;
+}
+  #videoElement{
+width: 100vw;
+position: absolute;
+left: 0;
+top: 0;
+transform: scale(8);
+transform-origin: left top;
+  }
+
+.fish-flip .fish-direction { transform: scaleX(-1); }
+
+.fish-spin .fish-body { transform: rotate(720deg); }
+
+
+.bubble-flip {
+  margin-left: -28px;
+  animation-name: bubble-flip;
+}
+@keyframes bubble-flip {
+  100% {
+    transform: translateY(-200px) rotate(1080deg);
+    opacity: 0;
+  }
+}
+.pond{
+  width: 100vw;
+  height: 100%
+}
+.bg_color{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(blue, rgba(72, 97, 255, 0) 48.32%);
+  z-index: 10000000;
+  transition: 3s
+}
+.orange .bg_color{
+  background: linear-gradient(rgb(255, 24, 0), rgba(255, 203, 0, 0.23));
+}
+.black .bg_color{
+  background: black;
+}
+
+
+  </style>
+</head>
+
+<body>
+  <div class="bg_color"></div>
+  <video autoplay="true" id="videoElement"></video>
+  <img src="img/ocean.png" class="bg">
+  <img src="finger/finger.png" id="finger">
+  <div class="pond"></div>
+</body>

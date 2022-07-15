@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<head>
+  <link rel="stylesheet" href="common.css">
+  <meta charset="utf-8">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+  <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+  <!-- <script type="text/javascript" src="firebase-load.js"></script> -->
+  <script type="text/javascript">
+  // output : none
+  // input : b, c, a
+
+
+
+
+$(document).ready(function(){
+  for (var i = 0; i < 101; i++) {
+    console.log('helkj')
+    $('.wrapper').append('<img class="img img_'+i+'" src="frame/skycomp_'+pad_with_zeroes(i, 5)+'.png">')
+  }
+  function pad_with_zeroes(number, length) {
+
+    var my_string = '' + number;
+    while (my_string.length < length) {
+        my_string = '0' + my_string;
+    }
+
+    return my_string;
+  }
+})
+  var counter = 0;
+  var intervalObj = null;
+  var lastTimeoutValue = null;
+  var inputspeed
+  var inputspeed_array = []
+  var inputspeed_result = 3
+  var clearspeedvalue
+
+    var newTimeoutInterval = null;
+        newTimeoutInterval = 33
+        recreateInterval(33)
+  function recreateInterval(timeoutValue) {
+    // console.log('recreateInterval', timeoutValue);
+
+    if (intervalObj !== null) {
+      clearInterval(intervalObj);
+    }
+    console.log(timeoutValue)
+    intervalObj = setInterval(function() {
+      counter++
+      // console.log($('.img_' + counter % 9))
+      $('.img').css({ 'opacity': 0 })
+      $('.img_' + counter % 9000).css({ 'opacity': 1 })
+    }, timeoutValue);
+
+    lastTimeoutValue = timeoutValue;
+  }
+
+  function calculate(array) {
+      var i = 0, sum = 0, len = array.length;
+          console.log(array.length)
+      while (i < len) {
+          sum = sum + array[i++];
+      }
+      return sum / len;
+  }
+  </script>
+  <style>
+    body{
+      /*filter: invert(1);*/
+    }
+  .img {
+    position: absolute;
+    width: 100vw;
+    left: 0;
+    top: 0
+  }
+  html{background-color: black}
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    
+  </div>
+</body>
