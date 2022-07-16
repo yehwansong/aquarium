@@ -98,19 +98,6 @@ var bubblecounter = 0
 
 
 $(document).ready(function(){
-
-var video = document.querySelector("#videoElement");
-
-if (navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(function (stream) {
-      video.srcObject = stream;
-    })
-    .catch(function (err0r) {
-      console.log("Something went wrong!");
-    });
-}
-
     var STARTING_FISH_COUNT = 38;
 
   // globals
@@ -188,6 +175,19 @@ if (navigator.mediaDevices.getUserMedia) {
   function getRandom(upper) {
     return Math.random() * upper;
   }
+
+var video = document.querySelector("#videoElement");
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function (err0r) {
+      console.log("Something went wrong!");
+    });
+}
+
 })
   
   </script>
@@ -263,6 +263,7 @@ h1 {
   opacity: 0;
   transition: transform 10s;
   animation: spawn .5s forwards;
+  -webkit-animation: spawn .5s forwards;
   width: 10vw;
   height: 10vw;
 }
